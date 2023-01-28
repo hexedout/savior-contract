@@ -10,7 +10,7 @@ The `targetWallet` can add additional executors making the ability of triggering
 Once triggered, the tokens are initially transferred to the contract, with only the `receiver` being able to call `withdraw()` and remove them from the contract.
 
 
-You can try it out for yourself at [parallel-limit.surge.sh](parallel-limit.surge.sh) and going to the `SaviorFactory` which can deploy your own Savior contract, the last 10 created will be visible.
+You can try it out for yourself at [parallel-limit.surge.sh](https://parallel-limit.surge.sh) and going to the `SaviorFactory` which can deploy your own Savior contract, the last 10 created will be visible.
 
 The `SaviorToken` contract is a standard ERC20 token with an extra `faucet` function to mint yourself fake tokens to test.
 
