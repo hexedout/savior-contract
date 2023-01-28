@@ -1,13 +1,6 @@
-import { Button, Col, Menu, Row } from "antd";
-
+import { Button, Col, Collapse, Menu, Row } from "antd";
 import "antd/dist/antd.css";
-import {
-  useBalance,
-  useContractLoader,
-  useContractReader,
-  // useOnBlock,
-  useUserProviderAndSigner,
-} from "eth-hooks";
+import { useBalance, useContractLoader, useContractReader, useUserProviderAndSigner } from "eth-hooks";
 import { useExchangeEthPrice } from "eth-hooks/dapps/dex";
 import React, { useCallback, useEffect, useState } from "react";
 import { Link, Route, Switch, useLocation } from "react-router-dom";
@@ -26,10 +19,9 @@ import {
 } from "./components";
 import { NETWORKS, ALCHEMY_KEY } from "./constants";
 import externalContracts from "./contracts/external_contracts";
-// contracts
 import deployedContracts from "./contracts/hardhat_contracts.json";
 import { getRPCPollTime, Transactor, Web3ModalSetup } from "./helpers";
-import { Home, ExampleUI, Hints, Subgraph } from "./views";
+import { Home, Hints, Subgraph } from "./views";
 import { useStaticJsonRPC, useGasPrice } from "./hooks";
 
 const { ethers } = require("ethers");
@@ -53,7 +45,7 @@ const { ethers } = require("ethers");
 */
 
 /// 📡 What chain are your contracts deployed to?
-const initialNetwork = NETWORKS.localhost; // <------- select your target frontend network (localhost, goerli, xdai, mainnet)
+const initialNetwork = NETWORKS.goerli; // <------- select your target frontend network (localhost, goerli, xdai, mainnet)
 
 // 😬 Sorry for all the console logging
 const DEBUG = true;
@@ -79,6 +71,7 @@ function App(props) {
   const [address, setAddress] = useState();
   const [selectedNetwork, setSelectedNetwork] = useState(networkOptions[0]);
   const location = useLocation();
+  const { Panel } = Collapse;
 
   const targetNetwork = NETWORKS[selectedNetwork];
 
@@ -176,7 +169,7 @@ function App(props) {
   );
 
   // keep track of a variable from the contract in the local React state:
-  const purpose = useContractReader(readContracts, "YourContract", "purpose", [], localProviderPollingTime);
+  const saviors = useContractReader(readContracts, "SaviorFactory", "getSaviors", [], localProviderPollingTime);
 
   /*
   const addressFromENS = useResolveName(mainnetProvider, "austingriffith.eth");
@@ -261,6 +254,8 @@ function App(props) {
 
   const faucetAvailable = localProvider && localProvider.connection && targetNetwork.name.indexOf("local") !== -1;
 
+  const displayAddress = addr => addr.substr(0, 5) + "..." + addr.substr(-4);
+
   return (
     <div className="App">
       {/* ✏️ Edit the header and change the title to your project name */}
@@ -313,9 +308,6 @@ function App(props) {
         <Menu.Item key="/hints">
           <Link to="/hints">Hints</Link>
         </Menu.Item>
-        <Menu.Item key="/exampleui">
-          <Link to="/exampleui">ExampleUI</Link>
-        </Menu.Item>
         <Menu.Item key="/mainnetdai">
           <Link to="/mainnetdai">Mainnet DAI</Link>
         </Menu.Item>
@@ -326,25 +318,50 @@ function App(props) {
 
       <Switch>
         <Route exact path="/">
-          {/* pass in any web3 props to this Home component. For example, yourLocalBalance */}
-          <Home yourLocalBalance={yourLocalBalance} readContracts={readContracts} />
+          <Home address={address} readContracts={readContracts} />
         </Route>
         <Route exact path="/debug">
-          {/*
-                🎛 this scaffolding is full of commonly used components
-                this <Contract/> component will automatically parse your ABI
-                and give you a form to interact with it locally
-            */}
-
-          <Contract
-            name="YourContract"
-            price={price}
-            signer={userSigner}
-            provider={localProvider}
-            address={address}
-            blockExplorer={blockExplorer}
-            contractConfig={contractConfig}
-          />
+          <div style={{ margin: "auto", width: "70vw" }}>
+            <Collapse>
+              <Panel header="Savior Token" key="1">
+                <Contract
+                  name="SaviorToken"
+                  price={price}
+                  signer={userSigner}
+                  provider={localProvider}
+                  address={address}
+                  blockExplorer={blockExplorer}
+                  contractConfig={contractConfig}
+                />
+              </Panel>
+              <Panel header="Savior Factory" key="2">
+                <Contract
+                  name="SaviorFactory"
+                  price={price}
+                  signer={userSigner}
+                  provider={localProvider}
+                  address={address}
+                  blockExplorer={blockExplorer}
+                  contractConfig={contractConfig}
+                />
+              </Panel>
+              {saviors?.slice(-10).map((sav, index) => {
+                return (
+                  <Panel header={`Savior Contract (${displayAddress(sav)})`} key={3 + index}>
+                    <Contract
+                      name="Savior"
+                      price={price}
+                      signer={userSigner}
+                      provider={localProvider}
+                      address={address}
+                      blockExplorer={blockExplorer}
+                      contractConfig={contractConfig}
+                    />
+                  </Panel>
+                );
+              })}
+            </Collapse>
+          </div>
         </Route>
         <Route path="/hints">
           <Hints
@@ -354,42 +371,7 @@ function App(props) {
             price={price}
           />
         </Route>
-        <Route path="/exampleui">
-          <ExampleUI
-            address={address}
-            userSigner={userSigner}
-            mainnetProvider={mainnetProvider}
-            localProvider={localProvider}
-            yourLocalBalance={yourLocalBalance}
-            price={price}
-            tx={tx}
-            writeContracts={writeContracts}
-            readContracts={readContracts}
-            purpose={purpose}
-          />
-        </Route>
-        <Route path="/mainnetdai">
-          <Contract
-            name="DAI"
-            customContract={mainnetContracts && mainnetContracts.contracts && mainnetContracts.contracts.DAI}
-            signer={userSigner}
-            provider={mainnetProvider}
-            address={address}
-            blockExplorer="https://etherscan.io/"
-            contractConfig={contractConfig}
-            chainId={1}
-          />
-          {/*
-            <Contract
-              name="UNI"
-              customContract={mainnetContracts && mainnetContracts.contracts && mainnetContracts.contracts.UNI}
-              signer={userSigner}
-              provider={mainnetProvider}
-              address={address}
-              blockExplorer="https://etherscan.io/"
-            />
-            */}
-        </Route>
+        <Route path="/mainnetdai"></Route>
         <Route path="/subgraph">
           <Subgraph
             subgraphUri={props.subgraphUri}

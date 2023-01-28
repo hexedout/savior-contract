@@ -1,11 +1,27 @@
-# 🏗 Scaffold-ETH
+# Savior Contract
 
-> everything you need to build on Ethereum! 🚀
+A very simple contract that allows a `targetWallet` to attempt to recover a token quickly in the event it is comprised or locked out / keys lost.
 
-🧪 Quickly experiment with Solidity using a frontend that adapts to your smart contract:
+The contract requires a `targetWallet` wallet containing the token, a `receiver` of the tokens, and a `token` address to transfer when triggered.
 
-![image](https://user-images.githubusercontent.com/2653167/124158108-c14ca380-da56-11eb-967e-69cde37ca8eb.png)
+The `EXECUTOR_ROLE` allows many wallets the ability to trigger the contract and recover the funds, without being able to withdraw them from the contract.
+The `targetWallet` can add additional executors making the ability of triggering the contract easier.
 
+Once triggered, the tokens are initially transferred to the contract, with only the `receiver` being able to call `withdraw()` and remove them from the contract.
+
+
+You can try it out for yourself at [parallel-limit.surge.sh](parallel-limit.surge.sh) and going to the `SaviorFactory` which can deploy your own Savior contract, the last 10 created will be visible.
+
+The `SaviorToken` contract is a standard ERC20 token with an extra `faucet` function to mint yourself fake tokens to test.
+
+Got the idea from almost losing a hot wallet's keys and needing a quick solution...
+
+
+---
+TODO:
+- Ability to transfer multiple tokens, as many as the `targetWallet` adds and approves
+
+___
 
 # 🏄‍♂️ Quick Start
 
@@ -47,7 +63,7 @@ cd scaffold-eth
 yarn deploy
 ```
 
-🔏 Edit your smart contract `YourContract.sol` in `packages/hardhat/contracts`
+🔏 Edit your smart contract `Savior.sol` in `packages/hardhat/contracts`
 
 📝 Edit your frontend `App.jsx` in `packages/react-app/src`
 
@@ -78,7 +94,7 @@ Documentation, tutorials, challenges, and many more resources, visit: [docs.scaf
 
 📕 Read the docs: https://docs.soliditylang.org
 
-📚 Go through each topic from [solidity by example](https://solidity-by-example.org) editing `YourContract.sol` in **🏗 scaffold-eth**
+📚 Go through each topic from [solidity by example](https://solidity-by-example.org) editing `Savior.sol` in **🏗 scaffold-eth**
 
 - [Primitive Data Types](https://solidity-by-example.org/primitives/)
 - [Mappings](https://solidity-by-example.org/mapping/)

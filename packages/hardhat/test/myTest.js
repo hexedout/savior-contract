@@ -9,30 +9,11 @@ describe("My Dapp", function () {
     setTimeout(done, 2000);
   });
 
-  describe("YourContract", function () {
-    it("Should deploy YourContract", async function () {
-      const YourContract = await ethers.getContractFactory("YourContract");
+  describe("Savior", function () {
+    it("Should deploy Savior", async function () {
+      const Savior = await ethers.getContractFactory("Savior");
 
-      myContract = await YourContract.deploy();
-    });
-
-    describe("setPurpose()", function () {
-      it("Should be able to set a new purpose", async function () {
-        const newPurpose = "Test Purpose";
-
-        await myContract.setPurpose(newPurpose);
-        expect(await myContract.purpose()).to.equal(newPurpose);
-      });
-
-      it("Should emit a SetPurpose event ", async function () {
-        const [owner] = await ethers.getSigners();
-
-        const newPurpose = "Another Test Purpose";
-
-        expect(await myContract.setPurpose(newPurpose))
-          .to.emit(myContract, "SetPurpose")
-          .withArgs(owner.address, newPurpose);
-      });
+      myContract = await Savior.deploy();
     });
   });
 });

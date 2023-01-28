@@ -11,17 +11,11 @@ const noContractDisplay = (
     Loading...{" "}
     <div style={{ padding: 32 }}>
       You need to run{" "}
-      <span
-        className="highlight"
-        style={{ marginLeft: 4, /* backgroundColor: "#f1f1f1", */ padding: 4, borderRadius: 4, fontWeight: "bolder" }}
-      >
+      <span className="highlight" style={{ marginLeft: 4, padding: 4, borderRadius: 4, fontWeight: "bolder" }}>
         yarn run chain
       </span>{" "}
       and{" "}
-      <span
-        className="highlight"
-        style={{ marginLeft: 4, /* backgroundColor: "#f1f1f1", */ padding: 4, borderRadius: 4, fontWeight: "bolder" }}
-      >
+      <span className="highlight" style={{ marginLeft: 4, padding: 4, borderRadius: 4, fontWeight: "bolder" }}>
         yarn run deploy
       </span>{" "}
       to see your contract here.
@@ -31,10 +25,7 @@ const noContractDisplay = (
         ☢️
       </span>
       Warning: You might need to run
-      <span
-        className="highlight"
-        style={{ marginLeft: 4, /* backgroundColor: "#f1f1f1", */ padding: 4, borderRadius: 4, fontWeight: "bolder" }}
-      >
+      <span className="highlight" style={{ marginLeft: 4, padding: 4, borderRadius: 4, fontWeight: "bolder" }}>
         yarn run deploy
       </span>{" "}
       <i>again</i> after the frontend comes up!
